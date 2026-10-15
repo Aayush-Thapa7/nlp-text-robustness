@@ -74,10 +74,62 @@ data/
 
 ---
 
+## Dataset Used: IMDb Large Movie Review Corpus (Milestone 2)
+
+| Property        | Value                                                                   |
+|-----------------|-------------------------------------------------------------------------|
+| **Source**      | [HuggingFace Hub — `stanfordnlp/imdb`](https://huggingface.co/datasets/stanfordnlp/imdb) |
+| **Original paper** | [Maas et al., 2011 — Learning Word Vectors for Sentiment Analysis](https://aclanthology.org/P11-1015/) |
+| **Task**        | Binary sentiment classification (Positive / Negative)                   |
+| **Train size**  | 25,000 labelled reviews                                                 |
+| **Test size**   | 25,000 labelled reviews                                                 |
+| **Unsupervised**| 50,000 unlabelled reviews (label = −1, not used for classification)     |
+| **Label map**   | `0` → Negative · `1` → Positive                                        |
+| **Language**    | English                                                                 |
+| **License**     | See [dataset card](https://huggingface.co/datasets/stanfordnlp/imdb)   |
+
+### Purpose in This Project
+
+IMDb is used as the **primary benchmark dataset** for robustness experiments.
+Unlike SST-2 (short sentence fragments), IMDb contains **full-length movie
+reviews** (average ~230 words), which makes it a more realistic and challenging
+test bed for studying how text corruption affects classifier accuracy.
+
+### How to Download
+
+The script `src/explore_dataset.py` loads the dataset automatically:
+
+```python
+from datasets import load_dataset
+
+# Downloads on first run; uses local cache on subsequent runs.
+dataset = load_dataset("stanfordnlp/imdb")
+```
+
+HuggingFace caches the download in `~/.cache/huggingface/datasets/` by default.
+To redirect the cache into a local folder (e.g., for offline use):
+
+```bash
+# Windows PowerShell
+$env:HF_HOME = "D:\nlp-text-robustness\.cache"
+
+# macOS / Linux
+export HF_HOME="/path/to/nlp-text-robustness/.cache"
+```
+
+> The `.cache/` directory is already listed in `.gitignore`.
+
+> **⚠️ Cache and downloaded data must NOT be committed to Git.**
+> HuggingFace cache directories can be several gigabytes. They are machine-
+> specific binary blobs and should always be re-downloaded from the Hub.
+
+---
+
 ## Adding New Datasets
 
 If you add a new dataset in future experiments:
 1. Load it via `datasets.load_dataset(...)` whenever possible.
 2. If you must save files locally, store them in `data/raw/` (already git-ignored).
 3. Document the dataset name, source URL, license, and size in this README.
-4. **Never** `git add` a data file.
+4. **Never** `git add` a data file, a `.cache/` directory, or any HuggingFace
+   arrow/parquet files.
