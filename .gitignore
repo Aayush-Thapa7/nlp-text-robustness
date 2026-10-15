@@ -1,0 +1,111 @@
+# ─────────────────────────────────────────
+#  nlp-text-robustness  —  .gitignore
+# ─────────────────────────────────────────
+
+# ── Virtual Environments ──────────────────
+.venv/
+venv/
+env/
+ENV/
+
+# ── Python Cache & Bytecode ───────────────
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyo
+
+# ── Jupyter Notebook Checkpoints ──────────
+.ipynb_checkpoints/
+*.ipynb_checkpoints
+
+# ── Downloaded Datasets ───────────────────
+# HuggingFace datasets cache (auto-downloaded)
+data/raw/
+data/processed/
+data/cache/
+# Common dataset file extensions — never commit large data files
+*.csv
+*.tsv
+*.jsonl
+*.json.gz
+*.parquet
+*.arrow
+*.pkl
+*.pickle
+*.h5
+*.hdf5
+*.feather
+
+# HuggingFace datasets library cache (default: ~/.cache/huggingface)
+# If you redirect HF_HOME into this repo, exclude it:
+.cache/
+
+# ── Model Checkpoints & Weights ───────────
+checkpoints/
+models/
+*.pt
+*.pth
+*.bin
+*.safetensors
+*.onnx
+*.ckpt
+*.model
+saved_model/
+runs/          # TensorBoard logs
+
+# ── Secrets & Environment Variables ───────
+.env
+.env.*
+*.env
+secrets.yaml
+secrets.json
+
+# ── OS & Editor Artifacts ─────────────────
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# Linux
+*~
+
+# VS Code
+.vscode/
+*.code-workspace
+
+# PyCharm / JetBrains
+.idea/
+
+# ── Build & Distribution ──────────────────
+dist/
+build/
+*.egg-info/
+*.egg
+.eggs/
+
+# ── Pytest & Coverage ─────────────────────
+.pytest_cache/
+.coverage
+coverage.xml
+htmlcov/
+
+# ── Temporary & Scratch Files ─────────────
+tmp/
+temp/
+scratch/
+*.tmp
+*.bak
+*.swp
+*.log
+*.out
+
+# ── Matplotlib Output (keep source notebooks, ignore rendered exports) ──
+# Comment out if you want to commit figures:
+# results/figures/*.png
+# results/figures/*.pdf

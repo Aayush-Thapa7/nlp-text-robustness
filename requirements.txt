@@ -1,0 +1,42 @@
+# ─────────────────────────────────────────────────────────────────────────────
+#  nlp-text-robustness — requirements.txt
+#  Install with: pip install -r requirements.txt
+#
+#  NOTE: PyTorch and Transformers are NOT listed here yet.
+#  They will be added in Week 3 (Day 15) once we move to transformer models,
+#  because the correct PyTorch install command depends on your hardware
+#  (CPU-only vs. CUDA GPU). Follow the official guide at:
+#  https://pytorch.org/get-started/locally/
+# ─────────────────────────────────────────────────────────────────────────────
+
+# ── Data Manipulation ─────────────────────
+pandas>=2.0.0
+numpy>=1.24.0
+
+# ── Machine Learning ──────────────────────
+scikit-learn>=1.3.0
+
+# ── Visualization ─────────────────────────
+matplotlib>=3.7.0
+seaborn>=0.12.0
+
+# ── Jupyter Notebooks ─────────────────────
+jupyter>=1.0.0
+ipykernel>=6.0.0
+ipywidgets>=8.0.0
+
+# ── NLP Datasets (HuggingFace) ────────────
+# Provides easy access to SST-2 and other benchmark datasets
+datasets>=2.14.0
+
+# ── Testing ───────────────────────────────
+pytest>=7.4.0
+pytest-cov>=4.1.0    # code coverage reports
+
+# ─────────────────────────────────────────────────────────────────────────────
+#  FUTURE ADDITIONS (Week 3+) — uncomment when ready:
+#
+#  torch>=2.0.0          ← install via: https://pytorch.org/get-started/locally/
+#  transformers>=4.35.0  ← HuggingFace Transformers
+#  accelerate>=0.24.0    ← speeds up transformer inference
+# ─────────────────────────────────────────────────────────────────────────────
