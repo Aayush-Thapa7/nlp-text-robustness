@@ -76,49 +76,7 @@ Each corruption type will be tested at varying noise levels (percentage of chara
 
 ---
 
-## 🗓️ 30-Day Research Roadmap
 
-### Week 1 — Foundation (Days 1–7)
-- [x] **Day 1**: Initialize repository, set up project structure
-- [ ] **Day 2**: Write and test character-level corruption utilities (`src/corruption.py`)
-- [ ] **Day 3**: Load and explore SST-2 dataset (`notebooks/01_data_exploration.ipynb`)
-- [ ] **Day 4**: Implement TF-IDF feature extraction pipeline
-- [ ] **Day 5**: Train and evaluate Logistic Regression and Naive Bayes baselines on clean data
-- [ ] **Day 6**: Run baselines on all corruption types at all intensity levels
-- [ ] **Day 7**: Visualize baseline degradation curves; write summary notes
-
-### Week 2 — Analysis & Hardening (Days 8–14)
-- [ ] **Day 8**: Deep-dive error analysis — which corruption types hurt most?
-- [ ] **Day 9**: Investigate per-class robustness (are positive/negative reviews affected differently?)
-- [ ] **Day 10**: Attempt simple mitigation: spell-checking preprocessing
-- [ ] **Day 11**: Re-evaluate baselines with spell-check preprocessing
-- [ ] **Day 12**: Write `tests/` unit tests for corruption functions
-- [ ] **Day 13**: Refactor `src/` into clean, importable modules
-- [ ] **Day 14**: Mid-project checkpoint — document findings so far in `results/`
-
-### Week 3 — Transformers (Days 15–21)
-- [ ] **Day 15**: Add `torch` and `transformers` to requirements; set up GPU/CPU inference
-- [ ] **Day 16**: Load pretrained DistilBERT and run inference on clean SST-2
-- [ ] **Day 17**: Evaluate DistilBERT on all corruption types and intensity levels
-- [ ] **Day 18**: Compare DistilBERT vs. classical baselines — generate comparison plots
-- [ ] **Day 19**: Investigate attention weights on corrupted inputs (qualitative analysis)
-- [ ] **Day 20**: Load RoBERTa; repeat evaluation
-- [ ] **Day 21**: Transformer robustness summary; document findings
-
-### Week 4 — Writeup & Polish (Days 22–30)
-- [ ] **Day 22**: Compile all experiment results into `results/`
-- [ ] **Day 23**: Create final comparison table and all publication-ready plots
-- [ ] **Day 24**: Write `notebooks/05_final_analysis.ipynb` — end-to-end reproducible notebook
-- [ ] **Day 25**: Draft research summary (Introduction, Methods, Results, Conclusion)
-- [ ] **Day 26**: Peer review draft; revise figures
-- [ ] **Day 27**: Write reproducibility guide (how to run all experiments from scratch)
-- [ ] **Day 28**: Final test — clone repo fresh and run all notebooks in order
-- [ ] **Day 29**: Polish README, add badges, finalize `.gitignore`
-- [ ] **Day 30**: 🎉 Project complete — share on GitHub
-
----
-
-## 🚀 Getting Started
 
 ### 1. Clone the repository
 ```bash

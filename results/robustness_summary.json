@@ -1,0 +1,158 @@
+{
+  "experiment": "Milestone 4 -- Robustness Evaluation (TF-IDF + LR)",
+  "timestamp": "2026-10-16T21:44:09",
+  "dataset": "stanfordnlp/imdb",
+  "train_examples": 25000,
+  "test_examples": 25000,
+  "model": {
+    "tfidf": {
+      "ngram_range": [
+        1,
+        2
+      ],
+      "max_features": 100000,
+      "sublinear_tf": true,
+      "actual_vocab_size": 100000
+    },
+    "logistic_regression": {
+      "C": 1.0,
+      "solver": "lbfgs",
+      "max_iter": 1000,
+      "random_state": 42
+    }
+  },
+  "corruption": {
+    "strategies": [
+      "deletion",
+      "insertion",
+      "substitution",
+      "transposition"
+    ],
+    "rates_pct": [
+      0,
+      5,
+      10,
+      20
+    ],
+    "seed": 42,
+    "rate_definition": "Per-character Bernoulli: each character is independently affected with probability = rate/100."
+  },
+  "baseline_accuracy": 0.8992,
+  "results": [
+    {
+      "strategy": "deletion",
+      "rate_pct": 0,
+      "accuracy": 0.8992,
+      "macro_f1": 0.899198,
+      "accuracy_drop_pct": 0.0
+    },
+    {
+      "strategy": "deletion",
+      "rate_pct": 5,
+      "accuracy": 0.87488,
+      "macro_f1": 0.874862,
+      "accuracy_drop_pct": 2.432
+    },
+    {
+      "strategy": "deletion",
+      "rate_pct": 10,
+      "accuracy": 0.84232,
+      "macro_f1": 0.842175,
+      "accuracy_drop_pct": 5.688
+    },
+    {
+      "strategy": "deletion",
+      "rate_pct": 20,
+      "accuracy": 0.75932,
+      "macro_f1": 0.757866,
+      "accuracy_drop_pct": 13.988
+    },
+    {
+      "strategy": "insertion",
+      "rate_pct": 0,
+      "accuracy": 0.8992,
+      "macro_f1": 0.899198,
+      "accuracy_drop_pct": 0.0
+    },
+    {
+      "strategy": "insertion",
+      "rate_pct": 5,
+      "accuracy": 0.87812,
+      "macro_f1": 0.878116,
+      "accuracy_drop_pct": 2.108
+    },
+    {
+      "strategy": "insertion",
+      "rate_pct": 10,
+      "accuracy": 0.85084,
+      "macro_f1": 0.8508,
+      "accuracy_drop_pct": 4.836
+    },
+    {
+      "strategy": "insertion",
+      "rate_pct": 20,
+      "accuracy": 0.78004,
+      "macro_f1": 0.779566,
+      "accuracy_drop_pct": 11.916
+    },
+    {
+      "strategy": "substitution",
+      "rate_pct": 0,
+      "accuracy": 0.8992,
+      "macro_f1": 0.899198,
+      "accuracy_drop_pct": 0.0
+    },
+    {
+      "strategy": "substitution",
+      "rate_pct": 5,
+      "accuracy": 0.87504,
+      "macro_f1": 0.875035,
+      "accuracy_drop_pct": 2.416
+    },
+    {
+      "strategy": "substitution",
+      "rate_pct": 10,
+      "accuracy": 0.84384,
+      "macro_f1": 0.843793,
+      "accuracy_drop_pct": 5.536
+    },
+    {
+      "strategy": "substitution",
+      "rate_pct": 20,
+      "accuracy": 0.76116,
+      "macro_f1": 0.760564,
+      "accuracy_drop_pct": 13.804
+    },
+    {
+      "strategy": "transposition",
+      "rate_pct": 0,
+      "accuracy": 0.8992,
+      "macro_f1": 0.899198,
+      "accuracy_drop_pct": 0.0
+    },
+    {
+      "strategy": "transposition",
+      "rate_pct": 5,
+      "accuracy": 0.8714,
+      "macro_f1": 0.871384,
+      "accuracy_drop_pct": 2.78
+    },
+    {
+      "strategy": "transposition",
+      "rate_pct": 10,
+      "accuracy": 0.8362,
+      "macro_f1": 0.83602,
+      "accuracy_drop_pct": 6.3
+    },
+    {
+      "strategy": "transposition",
+      "rate_pct": 20,
+      "accuracy": 0.7388,
+      "macro_f1": 0.736329,
+      "accuracy_drop_pct": 16.04
+    }
+  ],
+  "timing_seconds": {
+    "model_training": 9.16
+  }
+}
