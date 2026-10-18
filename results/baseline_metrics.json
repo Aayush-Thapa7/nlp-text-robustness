@@ -1,6 +1,6 @@
 {
   "experiment": "Milestone 3 -- TF-IDF + Logistic Regression Baseline",
-  "timestamp": "2026-10-15T21:34:13",
+  "timestamp": "2026-10-16T22:43:52",
   "dataset": "stanfordnlp/imdb",
   "random_seed": 42,
   "train_examples": 25000,
@@ -35,7 +35,7 @@
     "classification_report": "              precision    recall  f1-score   support\n\n    Negative       0.90      0.89      0.90     12500\n    Positive       0.90      0.90      0.90     12500\n\n    accuracy                           0.90     25000\n   macro avg       0.90      0.90      0.90     25000\nweighted avg       0.90      0.90      0.90     25000\n"
   },
   "timing_seconds": {
-    "fit": 9.24,
-    "predict": 4.85
+    "fit": 10.12,
+    "predict": 5.07
   }
 }

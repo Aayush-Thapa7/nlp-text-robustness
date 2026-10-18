@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sentiment Analyzer</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            padding: 40px 18px;
+            background: #0b1020;
+            color: #eef2ff;
+            font-family: Arial, sans-serif;
+        }
+
+        main {
+            max-width: 760px;
+            margin: 40px auto;
+            padding: 32px;
+            background: #151d33;
+            border: 1px solid #2c3857;
+            border-radius: 20px;
+        }
+
+        .tag {
+            color: #a5b4fc;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        h1 {
+            font-size: 34px;
+            margin-bottom: 12px;
+        }
+
+        p {
+            color: #b8c3dc;
+            line-height: 1.6;
+        }
+
+        textarea {
+            width: 100%;
+            min-height: 180px;
+            margin: 16px 0;
+            padding: 16px;
+            border-radius: 12px;
+            border: 1px solid #394765;
+            background: #0b1020;
+            color: white;
+            font: inherit;
+            resize: vertical;
+        }
+
+        button {
+            width: 100%;
+            padding: 15px;
+            border: 0;
+            border-radius: 10px;
+            background: #818cf8;
+            color: #10152b;
+            font-weight: bold;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #a5b4fc;
+        }
+
+        .result {
+            margin-top: 24px;
+            padding: 20px;
+            border-radius: 12px;
+            background: #202b45;
+        }
+
+        .positive {
+            color: #6ee7b7;
+        }
+
+        .negative {
+            color: #fda4af;
+        }
+
+        .note {
+            font-size: 13px;
+            margin-top: 24px;
+        }
+    </style>
+</head>
+
+<body>
+    <main>
+        <div class="tag">IMDb · Machine Learning Demo</div>
+        <h1>Movie Review Analyzer</h1>
+
+        <nav style="display:flex; gap:12px; flex-wrap:wrap; margin:20px 0;">
+            <a href="/" style="color:#93c5fd;">Sentiment Analyzer</a>
+            <a href="/playground" style="color:#93c5fd;">Robustness Playground</a>
+            <a href="/results" style="color:#93c5fd;">Results Dashboard</a>
+        </nav>
+
+        <p>
+            Enter a movie review to see whether your trained
+            TF-IDF and Logistic Regression model predicts
+            a positive or negative sentiment.
+        </p>
+
+        <form method="POST">
+            <label for="review">Your movie review</label>
+            <textarea id="review" name="review" placeholder="Type or paste a movie review here..."
+                required>{{ review }}</textarea>
+
+            <button type="submit">Analyze sentiment →</button>
+        </form>
+
+        {% if prediction is not none %}
+        <section class="result" aria-live="polite">
+            <h2 class="{{ 'positive' if prediction|string|lower == 'positive' else 'negative' }}">
+                Prediction: {{ prediction }}
+            </h2>
+
+            {% if probability is not none %}
+            <p>Model score for this predicted class: {{ "%.2f"|format(probability) }}%</p>
+            {% endif %}
+
+            <p>This is a model prediction, not a guaranteed judgment of the review.</p>
+        </section>
+        {% endif %}
+
+        <p class="note">
+            Research project: Robustness of Sentiment Classification
+            Models Under Character-Level Text Corruption.
+        </p>
+    </main>
+</body>
+
+</html>

@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Robustness Results Dashboard</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 30px 20px;
+            font-family: Arial, sans-serif;
+            background: #0b1120;
+            color: #e5e7eb;
+        }
+
+        .container {
+            max-width: 1150px;
+            margin: auto;
+        }
+
+        header {
+            margin-bottom: 28px;
+        }
+
+        h1 {
+            color: #93c5fd;
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            color: #9ca3af;
+            line-height: 1.6;
+        }
+
+        .actions {
+            margin: 20px 0;
+        }
+
+        a {
+            color: #93c5fd;
+            text-decoration: none;
+        }
+
+        .button {
+            display: inline-block;
+            padding: 11px 16px;
+            background: #2563eb;
+            color: white;
+            border-radius: 8px;
+        }
+
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+            gap: 16px;
+            margin: 24px 0;
+        }
+
+        .card,
+        .panel {
+            background: #151e30;
+            border: 1px solid #293449;
+            border-radius: 12px;
+            padding: 20px;
+        }
+
+        .card h3 {
+            margin: 0 0 12px;
+            font-size: 14px;
+            color: #9ca3af;
+            font-weight: normal;
+        }
+
+        .metric {
+            font-size: 27px;
+            font-weight: bold;
+            color: #86efac;
+        }
+
+        .panel {
+            margin: 20px 0;
+            overflow-x: auto;
+        }
+
+        h2 {
+            font-size: 20px;
+            margin-top: 0;
+        }
+
+        .chart-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin: 18px 0;
+        }
+
+        .chart-label {
+            width: 125px;
+            flex-shrink: 0;
+            text-transform: capitalize;
+        }
+
+        .bar-track {
+            flex: 1;
+            background: #273449;
+            height: 25px;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .bar {
+            height: 100%;
+            background: linear-gradient(90deg, #2563eb, #38bdf8);
+            border-radius: 5px;
+        }
+
+        .chart-value {
+            width: 65px;
+            text-align: right;
+            font-size: 14px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 600px;
+        }
+
+        th,
+        td {
+            padding: 13px;
+            border-bottom: 1px solid #293449;
+            text-align: left;
+        }
+
+        th {
+            color: #93c5fd;
+            background: #1e293b;
+        }
+
+        tr:hover {
+            background: #1e293b;
+        }
+
+        footer {
+            color: #9ca3af;
+            margin-top: 30px;
+            font-size: 13px;
+        }
+
+        @media (max-width: 550px) {
+            body {
+                padding: 18px 10px;
+            }
+
+            .chart-label {
+                width: 90px;
+                font-size: 13px;
+            }
+
+            .chart-value {
+                width: 55px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <h1>Model Robustness Dashboard</h1>
+            <p class="subtitle">
+                Robustness of Sentiment Classification Models Under
+                Character-Level Text Corruption
+            </p>
+        </header>
+
+        <div class="actions">
+            <a class="button" href="/">← Back to Sentiment Analyzer</a>
+        </div>
+
+        <section class="cards">
+
+            <div class="card">
+                <h3>Clean Test Accuracy</h3>
+                <div class="metric">
+                    {% for record in records %}
+                    {% if record['rate_pct'] == 0 and record['strategy'] == 'deletion' %}
+                    {{ "%.2f"|format(record['accuracy'] * 100) }}%
+                    {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>Clean Macro-F1</h3>
+                <div class="metric">
+                    {% for record in records %}
+                    {% if record['rate_pct'] == 0 and record['strategy'] == 'deletion' %}
+                    {{ "%.2f"|format(record['macro_f1'] * 100) }}%
+                    {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>Corruption Methods</h3>
+                <div class="metric">4</div>
+            </div>
+            <div class="card">
+                <h3>Corruption Levels</h3>
+                <div class="metric">0%–20%</div>
+            </div>
+        </section>
+
+        <section class="panel">
+            <h2>Accuracy at 20% Corruption</h2>
+
+            <p class="subtitle">
+                These bars are generated from your experiment CSV file.
+            </p>
+
+            {% for record in records if record['rate_pct'] == 20 %}
+            <div class="chart-row">
+
+                <div class="chart-label">
+                    {{ record['strategy'] | title }}
+                </div>
+
+                <div class="bar-track">
+                    <div class="bar" style="width: {{ record['accuracy'] * 100 }}%">
+                    </div>
+                </div>
+
+                <div class="chart-value">
+                    {{ "%.2f"|format(record['accuracy'] * 100) }}%
+                </div>
+
+            </div>
+            {% endfor %}
+        </section>
+
+
+<section class="panel">
+    <h2>Accuracy Across Corruption Levels</h2>
+    <p class="subtitle">
+        Accuracy at each corruption level, based on your experiment CSV.
+    </p>
+
+    {% for strategy in ['deletion', 'insertion', 'substitution', 'transposition'] %}
+        <h3>{{ strategy | title }}</h3>
+
+        {% for record in records if record['strategy'] == strategy %}
+            <div class="chart-row">
+                <div class="chart-label">
+                    {{ record['rate_pct'] }}% corruption
+                </div>
+
+                <div class="bar-track">
+                    <div class="bar"
+                         style="width: {{ record['accuracy'] * 100 }}%">
+                    </div>
+                </div>
+
+                <div class="chart-value">
+                    {{ "%.2f"|format(record['accuracy'] * 100) }}%
+                </div>
+            </div>
+        {% endfor %}
+    {% endfor %}
+</section>
+
+        <section class="panel">
+            <h2>Experiment Results</h2>
+            <p class="subtitle">
+                The table below is loaded from your robustness_results.csv file.
+            </p>
+
+            {% if records %}
+            <table>
+                <thead>
+                    <tr>
+                        {% for key in records[0].keys() %}
+                        <th>{{ key.replace('_', ' ') | title }}</th>
+                        {% endfor %}
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for record in records %}
+                    <tr>
+                        {% for value in record.values() %}
+                        <td>
+                            {% if value is number and value <= 1 and value>= 0 %}
+                                {{ "%.4f"|format(value) }}
+                                {% else %}
+                                {{ value }}
+                                {% endif %}
+                        </td>
+                        {% endfor %}
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <p>No experiment records were found in the CSV file.</p>
+            {% endif %}
+        </section>
+
+        <footer>
+            Sentiment Classification Research Project · TF-IDF + Logistic Regression
+        </footer>
+    </div>
+</body>
+
+</html>

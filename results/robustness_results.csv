@@ -1,0 +1,17 @@
+strategy,rate_pct,accuracy,macro_f1,accuracy_drop_pct
+deletion,0,0.8992,0.899198,0.0
+deletion,5,0.87488,0.874862,2.432
+deletion,10,0.84232,0.842175,5.688
+deletion,20,0.75932,0.757866,13.988
+insertion,0,0.8992,0.899198,0.0
+insertion,5,0.87812,0.878116,2.108
+insertion,10,0.85084,0.8508,4.836
+insertion,20,0.78004,0.779566,11.916
+substitution,0,0.8992,0.899198,0.0
+substitution,5,0.87504,0.875035,2.416
+substitution,10,0.84384,0.843793,5.536
+substitution,20,0.76116,0.760564,13.804
+transposition,0,0.8992,0.899198,0.0
+transposition,5,0.8714,0.871384,2.78
+transposition,10,0.8362,0.83602,6.3
+transposition,20,0.7388,0.736329,16.04

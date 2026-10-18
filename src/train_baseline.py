@@ -69,6 +69,8 @@ import sys      # For sys.exit on fatal errors
 import time     # For measuring how long each step takes
 from datetime import datetime   # For timestamping the saved metrics file
 from pathlib import Path        # For safely creating the results/ directory
+import joblib   # For saving the trained model
+
 
 # ---- Reconfigure stdout to UTF-8 --------------------------------------------
 # Windows terminals often default to cp1252 encoding, which cannot display
@@ -301,6 +303,17 @@ def train_and_evaluate() -> None:
     #   2. Calls clf.fit(X_tfidf, train_labels) -- trains the classifier.
     # Neither step ever sees the test texts at this point.
     pipeline.fit(train_texts, train_labels)
+    # Save the trained model for the web demo.
+    from pathlib import Path
+
+    ROOT_DIR = Path(__file__).resolve().parent.parent
+    MODEL_DIR = ROOT_DIR / "models"
+    MODEL_DIR.mkdir(parents=True, exist_ok=True)
+
+    MODEL_PATH = MODEL_DIR / "sentiment_model.joblib"
+    joblib.dump(pipeline, MODEL_PATH)
+
+    print(f"Trained model saved to: {MODEL_PATH.resolve()}")
 
     fit_seconds = time.time() - t_fit_start
     step(f"Training complete in {fit_seconds:.1f}s.")

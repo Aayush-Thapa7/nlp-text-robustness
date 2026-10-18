@@ -1,0 +1,245 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Robustness Playground</title>
+
+    <style>
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0;
+            padding: 32px 16px;
+            background: #0b1020;
+            color: #eef2ff;
+            font-family: Arial, sans-serif;
+        }
+
+        main {
+            max-width: 1000px;
+            margin: 20px auto;
+        }
+
+        a { color: #a5b4fc; text-decoration: none; }
+        a:hover { text-decoration: underline; }
+
+        .tag {
+            color: #a5b4fc;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-size: 12px;
+        }
+
+        h1 { font-size: clamp(28px, 5vw, 42px); margin-bottom: 8px; }
+
+        p { color: #b8c3dc; line-height: 1.6; }
+
+        .panel {
+            background: #151d33;
+            border: 1px solid #2c3857;
+            border-radius: 16px;
+            padding: 24px;
+            margin-top: 24px;
+        }
+
+        label {
+            display: block;
+            margin: 16px 0 8px;
+            font-weight: bold;
+        }
+
+        textarea, select {
+            width: 100%;
+            padding: 13px;
+            border-radius: 9px;
+            border: 1px solid #394765;
+            background: #0b1020;
+            color: white;
+            font: inherit;
+        }
+
+        textarea { min-height: 150px; resize: vertical; }
+
+        select { cursor: pointer; }
+
+        input[type="range"] { width: 100%; accent-color: #818cf8; }
+
+        button {
+            margin-top: 20px;
+            width: 100%;
+            padding: 14px;
+            border: 0;
+            border-radius: 9px;
+            background: #818cf8;
+            color: #10152b;
+            font-weight: bold;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        button:hover { background: #a5b4fc; }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 18px;
+        }
+
+        .result {
+            overflow-wrap: anywhere;
+            white-space: pre-wrap;
+            background: #0b1020;
+            border: 1px solid #394765;
+            border-radius: 10px;
+            padding: 16px;
+            min-height: 100px;
+            color: #e2e8f0;
+        }
+
+        .positive { color: #6ee7b7; }
+        .negative { color: #fda4af; }
+
+        .error {
+            color: #fecaca;
+            background: #451a27;
+            padding: 12px;
+            border-radius: 8px;
+        }
+
+        .muted { color: #94a3b8; font-size: 13px; }
+
+        @media (max-width: 650px) {
+            .grid { grid-template-columns: 1fr; }
+            .panel { padding: 18px; }
+        }
+    </style>
+</head>
+
+<body>
+<main>
+    <a href="/">← Back to Sentiment Analyzer</a>
+
+    <section>
+        <div class="tag">Interactive Research Tool</div>
+        <h1>Robustness Playground</h1>
+        <p>
+            Introduce character-level noise into a movie review and compare
+            how your trained sentiment classifier responds.
+        </p>
+    </section>
+
+    <section class="panel">
+        <form method="POST">
+            <label for="review">Enter a movie review</label>
+            <textarea
+                id="review"
+                name="review"
+                required
+                placeholder="Example: This movie was fantastic and wonderfully acted."
+            >{{ original }}</textarea>
+
+            <label for="strategy">Corruption method</label>
+            <select id="strategy" name="strategy">
+                {% for item in strategies %}
+                <option value="{{ item }}"
+                    {% if strategy == item %}selected{% endif %}>
+                    {{ item|capitalize }}
+                </option>
+                {% endfor %}
+            </select>
+
+            <label for="rate">
+                Corruption rate:
+                <span id="rateValue">{{ rate|int }}%</span>
+            </label>
+            <input
+                type="range"
+                id="rate"
+                name="rate"
+                min="0"
+                max="20"
+                step="5"
+                value="{{ rate|int }}"
+            >
+
+            <p class="muted">
+                0% leaves the text unchanged. Higher rates introduce more noise.
+            </p>
+
+            <button type="submit">Corrupt Text & Compare Predictions</button>
+        </form>
+    </section>
+
+    {% if error %}
+    <div class="panel error">{{ error }}</div>
+    {% endif %}
+
+    {% if original_prediction is not none %}
+    <section class="panel">
+        <h2>Comparison Results</h2>
+
+        <div class="grid">
+            <div>
+                <h3>Original Review</h3>
+                <div class="result">{{ original }}</div>
+                <p>
+                    Prediction:
+                    <strong class="{{ 'positive' if original_prediction == 'Positive' else 'negative' }}">
+                        {{ original_prediction }}
+                    </strong>
+                </p>
+                {% if original_score is not none %}
+                <p class="muted">Predicted-class score: {{ original_score }}%</p>
+                {% endif %}
+            </div>
+
+            <div>
+                <h3>Corrupted Review</h3>
+                <div class="result">{{ corrupted }}</div>
+                <p>
+                    Prediction:
+                    <strong class="{{ 'positive' if corrupted_prediction == 'Positive' else 'negative' }}">
+                        {{ corrupted_prediction }}
+                    </strong>
+                </p>
+                {% if corrupted_score is not none %}
+                <p class="muted">Predicted-class score: {{ corrupted_score }}%</p>
+                {% endif %}
+            </div>
+        </div>
+
+        {% if original_prediction != corrupted_prediction %}
+        <p class="error">
+            The predicted sentiment changed after corruption.
+        </p>
+        {% else %}
+        <p class="positive">
+            The predicted sentiment stayed the same for this review.
+        </p>
+        {% endif %}
+
+        <p class="muted">
+            Scores represent the model's score for its predicted class,
+            not a guarantee that the prediction is correct.
+        </p>
+    </section>
+    {% endif %}
+
+    <p class="muted">
+        Research: Robustness of Sentiment Classification Models Under
+        Character-Level Text Corruption.
+    </p>
+</main>
+
+<script>
+    const rateSlider = document.getElementById("rate");
+    const rateValue = document.getElementById("rateValue");
+
+    rateSlider.addEventListener("input", () => {
+        rateValue.textContent = rateSlider.value + "%";
+    });
+</script>
+</body>
+</html>
