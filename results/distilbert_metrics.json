@@ -1,0 +1,23 @@
+{
+  "experiment": "DistilBERT IMDb sentiment classification",
+  "dataset": "stanfordnlp/imdb",
+  "pretrained_model": "distilbert/distilbert-base-uncased",
+  "train_samples": 25000,
+  "test_samples": 25000,
+  "random_seed": 42,
+  "max_length": 256,
+  "batch_size": 8,
+  "epochs": 2,
+  "learning_rate": 2e-05,
+  "training_seconds": 376.98,
+  "gpu": "NVIDIA GeForce RTX 4060 Laptop GPU",
+  "evaluation": {
+    "eval_loss": 0.33648648858070374,
+    "eval_accuracy": 0.9142,
+    "eval_macro_f1": 0.9141965292839309,
+    "eval_runtime": 36.2735,
+    "eval_samples_per_second": 689.209,
+    "eval_steps_per_second": 86.151,
+    "epoch": 2.0
+  }
+}
