@@ -1,0 +1,66 @@
+{
+  "experiment": "TF-IDF + Linear SVM",
+  "timestamp": "2026-10-19T19:47:54",
+  "dataset": "stanfordnlp/imdb",
+  "random_seed": 42,
+  "train_examples": 25000,
+  "test_examples": 25000,
+  "tfidf": {
+    "ngram_range": [
+      1,
+      2
+    ],
+    "max_features": 100000,
+    "sublinear_tf": true,
+    "actual_vocab_size": 100000
+  },
+  "linear_svm": {
+    "C": 1.0,
+    "max_iter": 2000
+  },
+  "results": {
+    "accuracy": 0.90248,
+    "macro_f1": 0.902478,
+    "confusion_matrix": [
+      [
+        11336,
+        1164
+      ],
+      [
+        1274,
+        11226
+      ]
+    ],
+    "classification_report": {
+      "Negative": {
+        "precision": 0.8989690721649485,
+        "recall": 0.90688,
+        "f1-score": 0.9029072082835524,
+        "support": 12500.0
+      },
+      "Positive": {
+        "precision": 0.9060532687651331,
+        "recall": 0.89808,
+        "f1-score": 0.9020490156689434,
+        "support": 12500.0
+      },
+      "accuracy": 0.90248,
+      "macro avg": {
+        "precision": 0.9025111704650408,
+        "recall": 0.90248,
+        "f1-score": 0.9024781119762479,
+        "support": 25000.0
+      },
+      "weighted avg": {
+        "precision": 0.9025111704650408,
+        "recall": 0.90248,
+        "f1-score": 0.9024781119762479,
+        "support": 25000.0
+      }
+    }
+  },
+  "timing_seconds": {
+    "fit": 8.46,
+    "predict": 4.9
+  }
+}

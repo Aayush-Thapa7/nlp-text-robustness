@@ -1,0 +1,301 @@
+{
+  "experiment": "Logistic Regression vs Linear SVM robustness",
+  "dataset": "stanfordnlp/imdb",
+  "test_samples": 25000,
+  "random_seed": 42,
+  "corruption_strategies": [
+    "deletion",
+    "insertion",
+    "substitution",
+    "transposition"
+  ],
+  "corruption_rates_pct": [
+    0,
+    5,
+    10,
+    20
+  ],
+  "model_paths": {
+    "Logistic Regression": "models\\sentiment_model.joblib",
+    "Linear SVM": "models\\sentiment_svm.joblib"
+  },
+  "clean_test_accuracy": {
+    "Logistic Regression": 0.8992,
+    "Linear SVM": 0.90248
+  },
+  "results": [
+    {
+      "model": "Logistic Regression",
+      "strategy": "none",
+      "rate_pct": 0,
+      "accuracy": 0.8992,
+      "macro_f1": 0.8991981878253414,
+      "accuracy_drop_pct": 0.0
+    },
+    {
+      "model": "Linear SVM",
+      "strategy": "none",
+      "rate_pct": 0,
+      "accuracy": 0.90248,
+      "macro_f1": 0.9024781119762479,
+      "accuracy_drop_pct": 0.0
+    },
+    {
+      "model": "Logistic Regression",
+      "strategy": "deletion",
+      "rate_pct": 0,
+      "accuracy": 0.8992,
+      "macro_f1": 0.8991981878253414,
+      "accuracy_drop_pct": 0.0
+    },
+    {
+      "model": "Linear SVM",
+      "strategy": "deletion",
+      "rate_pct": 0,
+      "accuracy": 0.90248,
+      "macro_f1": 0.9024781119762479,
+      "accuracy_drop_pct": 0.0
+    },
+    {
+      "model": "Logistic Regression",
+      "strategy": "deletion",
+      "rate_pct": 5,
+      "accuracy": 0.87488,
+      "macro_f1": 0.8748617390240736,
+      "accuracy_drop_pct": 2.432000000000001
+    },
+    {
+      "model": "Linear SVM",
+      "strategy": "deletion",
+      "rate_pct": 5,
+      "accuracy": 0.87188,
+      "macro_f1": 0.8717691623932062,
+      "accuracy_drop_pct": 3.059999999999996
+    },
+    {
+      "model": "Logistic Regression",
+      "strategy": "deletion",
+      "rate_pct": 10,
+      "accuracy": 0.84232,
+      "macro_f1": 0.8421749110169177,
+      "accuracy_drop_pct": 5.688000000000004
+    },
+    {
+      "model": "Linear SVM",
+      "strategy": "deletion",
+      "rate_pct": 10,
+      "accuracy": 0.82572,
+      "macro_f1": 0.8248269749250892,
+      "accuracy_drop_pct": 7.675999999999994
+    },
+    {
+      "model": "Logistic Regression",
+      "strategy": "deletion",
+      "rate_pct": 20,
+      "accuracy": 0.75932,
+      "macro_f1": 0.7578664357972025,
+      "accuracy_drop_pct": 13.988
+    },
+    {
+      "model": "Linear SVM",
+      "strategy": "deletion",
+      "rate_pct": 20,
+      "accuracy": 0.7156,
+      "macro_f1": 0.7076603353543008,
+      "accuracy_drop_pct": 18.687999999999995
+    },
+    {
+      "model": "Logistic Regression",
+      "strategy": "insertion",
+      "rate_pct": 0,
+      "accuracy": 0.8992,
+      "macro_f1": 0.8991981878253414,
+      "accuracy_drop_pct": 0.0
+    },
+    {
+      "model": "Linear SVM",
+      "strategy": "insertion",
+      "rate_pct": 0,
+      "accuracy": 0.90248,
+      "macro_f1": 0.9024781119762479,
+      "accuracy_drop_pct": 0.0
+    },
+    {
+      "model": "Logistic Regression",
+      "strategy": "insertion",
+      "rate_pct": 5,
+      "accuracy": 0.87812,
+      "macro_f1": 0.8781163397849303,
+      "accuracy_drop_pct": 2.1079999999999988
+    },
+    {
+      "model": "Linear SVM",
+      "strategy": "insertion",
+      "rate_pct": 5,
+      "accuracy": 0.87488,
+      "macro_f1": 0.8748311268621999,
+      "accuracy_drop_pct": 2.759999999999996
+    },
+    {
+      "model": "Logistic Regression",
+      "strategy": "insertion",
+      "rate_pct": 10,
+      "accuracy": 0.85084,
+      "macro_f1": 0.8508004563916813,
+      "accuracy_drop_pct": 4.835999999999996
+    },
+    {
+      "model": "Linear SVM",
+      "strategy": "insertion",
+      "rate_pct": 10,
+      "accuracy": 0.84216,
+      "macro_f1": 0.8419050203696206,
+      "accuracy_drop_pct": 6.031999999999993
+    },
+    {
+      "model": "Logistic Regression",
+      "strategy": "insertion",
+      "rate_pct": 20,
+      "accuracy": 0.78004,
+      "macro_f1": 0.7795662328140491,
+      "accuracy_drop_pct": 11.916000000000004
+    },
+    {
+      "model": "Linear SVM",
+      "strategy": "insertion",
+      "rate_pct": 20,
+      "accuracy": 0.75496,
+      "macro_f1": 0.7526460636864982,
+      "accuracy_drop_pct": 14.751999999999999
+    },
+    {
+      "model": "Logistic Regression",
+      "strategy": "substitution",
+      "rate_pct": 0,
+      "accuracy": 0.8992,
+      "macro_f1": 0.8991981878253414,
+      "accuracy_drop_pct": 0.0
+    },
+    {
+      "model": "Linear SVM",
+      "strategy": "substitution",
+      "rate_pct": 0,
+      "accuracy": 0.90248,
+      "macro_f1": 0.9024781119762479,
+      "accuracy_drop_pct": 0.0
+    },
+    {
+      "model": "Logistic Regression",
+      "strategy": "substitution",
+      "rate_pct": 5,
+      "accuracy": 0.87504,
+      "macro_f1": 0.8750346222899218,
+      "accuracy_drop_pct": 2.415999999999996
+    },
+    {
+      "model": "Linear SVM",
+      "strategy": "substitution",
+      "rate_pct": 5,
+      "accuracy": 0.87352,
+      "macro_f1": 0.8734416585642111,
+      "accuracy_drop_pct": 2.8959999999999986
+    },
+    {
+      "model": "Logistic Regression",
+      "strategy": "substitution",
+      "rate_pct": 10,
+      "accuracy": 0.84384,
+      "macro_f1": 0.8437929239359694,
+      "accuracy_drop_pct": 5.535999999999996
+    },
+    {
+      "model": "Linear SVM",
+      "strategy": "substitution",
+      "rate_pct": 10,
+      "accuracy": 0.82996,
+      "macro_f1": 0.829548067861069,
+      "accuracy_drop_pct": 7.251999999999992
+    },
+    {
+      "model": "Logistic Regression",
+      "strategy": "substitution",
+      "rate_pct": 20,
+      "accuracy": 0.76116,
+      "macro_f1": 0.7605642804819648,
+      "accuracy_drop_pct": 13.804000000000006
+    },
+    {
+      "model": "Linear SVM",
+      "strategy": "substitution",
+      "rate_pct": 20,
+      "accuracy": 0.73136,
+      "macro_f1": 0.7275405102960153,
+      "accuracy_drop_pct": 17.111999999999995
+    },
+    {
+      "model": "Logistic Regression",
+      "strategy": "transposition",
+      "rate_pct": 0,
+      "accuracy": 0.8992,
+      "macro_f1": 0.8991981878253414,
+      "accuracy_drop_pct": 0.0
+    },
+    {
+      "model": "Linear SVM",
+      "strategy": "transposition",
+      "rate_pct": 0,
+      "accuracy": 0.90248,
+      "macro_f1": 0.9024781119762479,
+      "accuracy_drop_pct": 0.0
+    },
+    {
+      "model": "Logistic Regression",
+      "strategy": "transposition",
+      "rate_pct": 5,
+      "accuracy": 0.8714,
+      "macro_f1": 0.8713835187754163,
+      "accuracy_drop_pct": 2.7800000000000047
+    },
+    {
+      "model": "Linear SVM",
+      "strategy": "transposition",
+      "rate_pct": 5,
+      "accuracy": 0.8676,
+      "macro_f1": 0.8674826349885456,
+      "accuracy_drop_pct": 3.487999999999991
+    },
+    {
+      "model": "Logistic Regression",
+      "strategy": "transposition",
+      "rate_pct": 10,
+      "accuracy": 0.8362,
+      "macro_f1": 0.8360196896120138,
+      "accuracy_drop_pct": 6.2999999999999945
+    },
+    {
+      "model": "Linear SVM",
+      "strategy": "transposition",
+      "rate_pct": 10,
+      "accuracy": 0.81744,
+      "macro_f1": 0.8164586900726524,
+      "accuracy_drop_pct": 8.503999999999989
+    },
+    {
+      "model": "Logistic Regression",
+      "strategy": "transposition",
+      "rate_pct": 20,
+      "accuracy": 0.7388,
+      "macro_f1": 0.7363293426597642,
+      "accuracy_drop_pct": 16.04
+    },
+    {
+      "model": "Linear SVM",
+      "strategy": "transposition",
+      "rate_pct": 20,
+      "accuracy": 0.69788,
+      "macro_f1": 0.6877123534289942,
+      "accuracy_drop_pct": 20.46
+    }
+  ],
+  "generated_at_utc": "2026-10-23T10:32:37.754962+00:00"
+}
