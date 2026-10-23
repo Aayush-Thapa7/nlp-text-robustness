@@ -109,3 +109,5 @@ scratch/
 # Comment out if you want to commit figures:
 # results/figures/*.png
 # results/figures/*.pdf
+# DistilBERT training checkpoints and intermediate outputs
+training_output/
