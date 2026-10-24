@@ -4,234 +4,719 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Robustness Playground</title>
+    <meta name="theme-color" content="#07111f">
+    <meta name="description" content="Explore the robustness of sentiment classification under character-level text corruption.">
+    <title>Robustness Playground | Sentinel NLP</title>
 
     <style>
-        * { box-sizing: border-box; }
+        :root {
+            --bg: #07111f;
+            --surface: #0d1b2c;
+            --surface-light: #12243a;
+            --border: #233950;
+            --cyan: #38d9ed;
+            --cyan-hover: #76eafa;
+            --text: #edf5ff;
+            --muted: #91a5bd;
+            --green: #54e0ad;
+            --red: #ff8295;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
 
         body {
             margin: 0;
-            padding: 32px 16px;
-            background: #0b1020;
-            color: #eef2ff;
-            font-family: Arial, sans-serif;
+            min-height: 100vh;
+            background:
+                radial-gradient(ellipse at 15% 0%, #12314a 0%, transparent 42%),
+                var(--bg);
+            color: var(--text);
+            font-family: Inter, "Segoe UI", Arial, sans-serif;
+            line-height: 1.6;
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        .container {
+            width: min(1120px, calc(100% - 40px));
+            margin: 0 auto;
+        }
+
+        header {
+            border-bottom: 1px solid rgba(145, 165, 189, 0.15);
+            background: rgba(7, 17, 31, 0.85);
+        }
+
+        .navbar {
+            min-height: 78px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 18px;
+            padding: 12px 0;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 800;
+            letter-spacing: 1px;
+        }
+
+        .brand-icon {
+            display: grid;
+            place-items: center;
+            width: 42px;
+            height: 42px;
+            border-radius: 12px;
+            background: var(--cyan);
+            color: var(--bg);
+            font-size: 23px;
+        }
+
+        .brand small {
+            display: block;
+            color: var(--muted);
+            font-size: 10px;
+            letter-spacing: 2px;
+        }
+
+        nav {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        nav a {
+            padding: 9px 13px;
+            border-radius: 9px;
+            color: var(--muted);
+            font-size: 13px;
+        }
+
+        nav a:hover,
+        nav a.active {
+            background: var(--surface-light);
+            color: var(--cyan);
         }
 
         main {
-            max-width: 1000px;
-            margin: 20px auto;
+            padding-bottom: 48px;
         }
 
-        a { color: #a5b4fc; text-decoration: none; }
-        a:hover { text-decoration: underline; }
+        .hero {
+            padding: 66px 0 24px;
+            max-width: 850px;
+        }
 
-        .tag {
-            color: #a5b4fc;
-            text-transform: uppercase;
+        .eyebrow {
+            color: var(--cyan);
+            font-size: 12px;
+            font-weight: 700;
             letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        h1 {
+            margin: 16px 0 12px;
+            font-size: clamp(36px, 5vw, 54px);
+            line-height: 1.12;
+            letter-spacing: -1.8px;
+        }
+
+        h1 span {
+            color: var(--cyan);
+        }
+
+        p {
+            color: var(--muted);
+        }
+
+        .hero p {
+            max-width: 700px;
+            font-size: 16px;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 15px;
+            margin: 25px 0;
+        }
+
+        .stat-card {
+            padding: 19px;
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            background: rgba(13, 27, 44, 0.85);
+        }
+
+        .stat-label {
+            color: var(--muted);
+            font-size: 11px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .stat-value {
+            margin: 8px 0 2px;
+            font-size: 26px;
+            font-weight: 800;
+        }
+
+        .stat-note {
+            color: var(--muted);
             font-size: 12px;
         }
 
-        h1 { font-size: clamp(28px, 5vw, 42px); margin-bottom: 8px; }
-
-        p { color: #b8c3dc; line-height: 1.6; }
+        .layout {
+            display: grid;
+            grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+            gap: 20px;
+            align-items: start;
+            margin: 24px 0;
+        }
 
         .panel {
-            background: #151d33;
-            border: 1px solid #2c3857;
-            border-radius: 16px;
-            padding: 24px;
-            margin-top: 24px;
+            min-width: 0;
+            padding: 25px;
+            border: 1px solid var(--border);
+            border-radius: 17px;
+            background: linear-gradient(145deg, #102137, #0b1929);
+            box-shadow: 0 18px 48px rgba(0, 0, 0, 0.12);
+        }
+
+        .panel-heading {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .panel-icon {
+            display: grid;
+            place-items: center;
+            flex: 0 0 42px;
+            height: 42px;
+            border-radius: 12px;
+            background: rgba(56, 217, 237, 0.1);
+            color: var(--cyan);
+            font-size: 21px;
+        }
+
+        h2 {
+            margin: 0;
+            font-size: 20px;
+        }
+
+        .panel-heading p {
+            margin: 4px 0 0;
+            font-size: 13px;
         }
 
         label {
             display: block;
-            margin: 16px 0 8px;
-            font-weight: bold;
+            margin: 18px 0 8px;
+            font-size: 13px;
+            font-weight: 700;
         }
 
-        textarea, select {
+        textarea,
+        select {
+            display: block;
             width: 100%;
-            padding: 13px;
-            border-radius: 9px;
-            border: 1px solid #394765;
-            background: #0b1020;
-            color: white;
+            padding: 14px;
+            border: 1px solid #2c435b;
+            border-radius: 11px;
+            outline: none;
+            background: #081523;
+            color: var(--text);
             font: inherit;
         }
 
-        textarea { min-height: 150px; resize: vertical; }
+        textarea {
+            min-height: 165px;
+            resize: vertical;
+            line-height: 1.7;
+        }
 
-        select { cursor: pointer; }
+        textarea::placeholder {
+            color: #667d95;
+        }
 
-        input[type="range"] { width: 100%; accent-color: #818cf8; }
+        textarea:focus,
+        select:focus {
+            border-color: var(--cyan);
+            box-shadow: 0 0 0 3px rgba(56, 217, 237, 0.1);
+        }
 
-        button {
-            margin-top: 20px;
-            width: 100%;
-            padding: 14px;
-            border: 0;
-            border-radius: 9px;
-            background: #818cf8;
-            color: #10152b;
-            font-weight: bold;
-            font-size: 16px;
+        select {
             cursor: pointer;
         }
 
-        button:hover { background: #a5b4fc; }
+        input[type="range"] {
+            width: 100%;
+            accent-color: var(--cyan);
+            cursor: pointer;
+        }
 
-        .grid {
+        .range-heading {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .range-badge {
+            padding: 4px 10px;
+            border: 1px solid rgba(56, 217, 237, 0.3);
+            border-radius: 20px;
+            background: rgba(56, 217, 237, 0.08);
+            color: var(--cyan);
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .hint {
+            margin: 8px 0;
+            font-size: 12px;
+        }
+
+        .button {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            width: 100%;
+            min-height: 49px;
+            margin-top: 20px;
+            padding: 13px 18px;
+            border: 0;
+            border-radius: 10px;
+            background: var(--cyan);
+            color: #061321;
+            font-weight: 800;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.2s;
+        }
+
+        .button:hover {
+            background: var(--cyan-hover);
+            transform: translateY(-1px);
+        }
+
+        .button:focus-visible,
+        nav a:focus-visible {
+            outline: 2px solid white;
+            outline-offset: 3px;
+        }
+
+        .result-panel {
+            margin-top: 22px;
+        }
+
+        .comparison-grid {
             display: grid;
             grid-template-columns: repeat(2, minmax(0, 1fr));
-            gap: 18px;
+            gap: 14px;
+            margin-top: 22px;
         }
 
-        .result {
+        .review-card {
+            min-width: 0;
+            padding: 16px;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            background: #081523;
+        }
+
+        .review-card h3 {
+            margin: 0 0 12px;
+            font-size: 14px;
+        }
+
+        .review-text {
+            min-height: 110px;
             overflow-wrap: anywhere;
             white-space: pre-wrap;
-            background: #0b1020;
-            border: 1px solid #394765;
-            border-radius: 10px;
-            padding: 16px;
-            min-height: 100px;
-            color: #e2e8f0;
+            color: #dce8f6;
+            font-size: 13px;
+            line-height: 1.7;
         }
 
-        .positive { color: #6ee7b7; }
-        .negative { color: #fda4af; }
+        .prediction-label {
+            margin-top: 18px;
+            color: var(--muted);
+            font-size: 11px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .prediction {
+            margin-top: 5px;
+            font-size: 20px;
+            font-weight: 800;
+        }
+
+        .positive {
+            color: var(--green);
+        }
+
+        .negative {
+            color: var(--red);
+        }
+
+        .score {
+            margin-top: 7px;
+            font-size: 12px;
+        }
+
+        .outcome {
+            margin-top: 17px;
+            padding: 15px;
+            border: 1px solid var(--border);
+            border-radius: 11px;
+            background: #081523;
+            font-size: 13px;
+        }
+
+        .outcome.changed {
+            border-color: rgba(255, 130, 149, 0.45);
+            color: var(--red);
+        }
+
+        .outcome.stable {
+            border-color: rgba(84, 224, 173, 0.35);
+            color: var(--green);
+        }
 
         .error {
-            color: #fecaca;
-            background: #451a27;
-            padding: 12px;
-            border-radius: 8px;
+            margin-top: 18px;
+            padding: 14px;
+            border: 1px solid rgba(255, 130, 149, 0.35);
+            border-radius: 10px;
+            background: rgba(255, 130, 149, 0.08);
+            color: var(--red);
+            font-size: 13px;
         }
 
-        .muted { color: #94a3b8; font-size: 13px; }
+        .info-card {
+            margin-top: 16px;
+            padding: 19px;
+            border: 1px solid var(--border);
+            border-radius: 13px;
+            background: rgba(13, 27, 44, 0.8);
+        }
 
-        @media (max-width: 650px) {
-            .grid { grid-template-columns: 1fr; }
-            .panel { padding: 18px; }
+        .info-card h3 {
+            margin: 0 0 8px;
+            font-size: 15px;
+        }
+
+        .info-card p {
+            margin-bottom: 0;
+            font-size: 13px;
+        }
+
+        .method-list {
+            display: grid;
+            gap: 10px;
+            margin-top: 14px;
+        }
+
+        .method-item {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            font-size: 13px;
+        }
+
+        .dot {
+            width: 7px;
+            height: 7px;
+            flex: 0 0 7px;
+            border-radius: 50%;
+            background: var(--cyan);
+        }
+
+        footer {
+            padding: 22px 0;
+            border-top: 1px solid rgba(145, 165, 189, 0.15);
+            color: var(--muted);
+            font-size: 12px;
+        }
+
+        .footer-inner {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            gap: 10px;
+        }
+
+        @media (max-width: 800px) {
+            .layout {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                width: calc(100% - 26px);
+            }
+
+            .navbar {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            nav {
+                gap: 4px;
+            }
+
+            nav a {
+                padding: 8px;
+                font-size: 12px;
+            }
+
+            .hero {
+                padding-top: 42px;
+            }
+
+            .stats {
+                grid-template-columns: 1fr;
+                gap: 10px;
+            }
+
+            .stat-card {
+                padding: 15px;
+            }
+
+            .panel {
+                padding: 18px;
+            }
+
+            .comparison-grid {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
 
 <body>
-<main>
-    <a href="/">← Back to Sentiment Analyzer</a>
+<header>
+    <div class="container navbar">
+        <a class="brand" href="/" aria-label="Sentinel NLP home">
+            <span class="brand-icon" aria-hidden="true">N</span>
+            <span>
+                SENTINEL NLP
+                <small>TEXT ROBUSTNESS LAB</small>
+            </span>
+        </a>
 
-    <section>
-        <div class="tag">Interactive Research Tool</div>
-        <h1>Robustness Playground</h1>
+        <nav aria-label="Main navigation">
+            <a href="/">Sentiment Analyzer</a>
+            <a class="active" href="/playground">Robustness Playground</a>
+            <a href="/results">Results Dashboard</a>
+        </nav>
+    </div>
+</header>
+
+<main class="container">
+    <section class="hero">
+        <div class="eyebrow">Interactive research tool · 02</div>
+        <h1>Stress-test your model.<br><span>Expose text fragility.</span></h1>
         <p>
             Introduce character-level noise into a movie review and compare
-            how your trained sentiment classifier responds.
+            how your trained sentiment classifier responds before and after corruption.
         </p>
     </section>
 
-    <section class="panel">
-        <form method="POST">
-            <label for="review">Enter a movie review</label>
-            <textarea
-                id="review"
-                name="review"
-                required
-                placeholder="Example: This movie was fantastic and wonderfully acted."
-            >{{ original }}</textarea>
-
-            <label for="strategy">Corruption method</label>
-            <select id="strategy" name="strategy">
-                {% for item in strategies %}
-                <option value="{{ item }}"
-                    {% if strategy == item %}selected{% endif %}>
-                    {{ item|capitalize }}
-                </option>
-                {% endfor %}
-            </select>
-
-            <label for="rate">
-                Corruption rate:
-                <span id="rateValue">{{ rate|int }}%</span>
-            </label>
-            <input
-                type="range"
-                id="rate"
-                name="rate"
-                min="0"
-                max="20"
-                step="5"
-                value="{{ rate|int }}"
-            >
-
-            <p class="muted">
-                0% leaves the text unchanged. Higher rates introduce more noise.
-            </p>
-
-            <button type="submit">Corrupt Text & Compare Predictions</button>
-        </form>
+    <section class="stats" aria-label="Experiment information">
+        <article class="stat-card">
+            <div class="stat-label">Corruption methods</div>
+            <div class="stat-value">04</div>
+            <div class="stat-note">Deletion, insertion, substitution, transposition</div>
+        </article>
+        <article class="stat-card">
+            <div class="stat-label">Maximum noise</div>
+            <div class="stat-value">20%</div>
+            <div class="stat-note">Available experiment range</div>
+        </article>
+        <article class="stat-card">
+            <div class="stat-label">Model under test</div>
+            <div class="stat-value">TF-IDF</div>
+            <div class="stat-note">Logistic Regression classifier</div>
+        </article>
     </section>
 
-    {% if error %}
-    <div class="panel error">{{ error }}</div>
-    {% endif %}
-
-    {% if original_prediction is not none %}
-    <section class="panel">
-        <h2>Comparison Results</h2>
-
-        <div class="grid">
-            <div>
-                <h3>Original Review</h3>
-                <div class="result">{{ original }}</div>
-                <p>
-                    Prediction:
-                    <strong class="{{ 'positive' if original_prediction == 'Positive' else 'negative' }}">
-                        {{ original_prediction }}
-                    </strong>
-                </p>
-                {% if original_score is not none %}
-                <p class="muted">Predicted-class score: {{ original_score }}%</p>
-                {% endif %}
+    <section class="layout">
+        <div class="panel">
+            <div class="panel-heading">
+                <div class="panel-icon" aria-hidden="true">⚙</div>
+                <div>
+                    <h2>Configure experiment</h2>
+                    <p>Choose how the review should be corrupted.</p>
+                </div>
             </div>
 
-            <div>
-                <h3>Corrupted Review</h3>
-                <div class="result">{{ corrupted }}</div>
-                <p>
-                    Prediction:
-                    <strong class="{{ 'positive' if corrupted_prediction == 'Positive' else 'negative' }}">
-                        {{ corrupted_prediction }}
-                    </strong>
+            <form method="POST">
+                <label for="review">Movie review</label>
+                <textarea
+                    id="review"
+                    name="review"
+                    required
+                    placeholder="Example: This movie was fantastic and wonderfully acted."
+                >{{ original }}</textarea>
+
+                <label for="strategy">Corruption method</label>
+                <select id="strategy" name="strategy">
+                    {% for item in strategies %}
+                    <option value="{{ item }}"
+                        {% if strategy == item %}selected{% endif %}>
+                        {{ item|capitalize }}
+                    </option>
+                    {% endfor %}
+                </select>
+
+                <div class="range-heading">
+                    <label for="rate">Corruption rate</label>
+                    <span class="range-badge" id="rateValue">{{ rate|int }}%</span>
+                </div>
+
+                <input
+                    type="range"
+                    id="rate"
+                    name="rate"
+                    min="0"
+                    max="20"
+                    step="5"
+                    value="{{ rate|int }}"
+                >
+
+                <p class="hint">
+                    0% leaves the text unchanged. Higher rates introduce more character-level noise.
                 </p>
-                {% if corrupted_score is not none %}
-                <p class="muted">Predicted-class score: {{ corrupted_score }}%</p>
-                {% endif %}
+
+                <button class="button" type="submit">
+                    Run corruption test <span aria-hidden="true">→</span>
+                </button>
+            </form>
+
+            {% if error %}
+            <div class="error" role="alert">{{ error }}</div>
+            {% endif %}
+        </div>
+
+        <aside>
+            <section class="info-card">
+                <h3>What are we testing?</h3>
+                <p>
+                    Small character-level changes can affect how a text classifier
+                    represents words and predicts sentiment.
+                </p>
+
+                <div class="method-list">
+                    <div class="method-item"><span class="dot"></span>Deletion — remove characters</div>
+                    <div class="method-item"><span class="dot"></span>Insertion — add characters</div>
+                    <div class="method-item"><span class="dot"></span>Substitution — replace characters</div>
+                    <div class="method-item"><span class="dot"></span>Transposition — swap neighboring characters</div>
+                </div>
+            </section>
+
+            <section class="info-card">
+                <h3>How to read the result</h3>
+                <p>
+                    Compare the original and corrupted predictions. A changed label
+                    indicates that this input's predicted sentiment was sensitive
+                    to the selected corruption.
+                </p>
+            </section>
+
+            <section class="info-card">
+                <h3>Experiment note</h3>
+                <p>
+                    This interactive demonstration tests one review at a time.
+                    It does not replace aggregate evaluation across a test dataset.
+                </p>
+            </section>
+        </aside>
+    </section>
+
+    {% if original_prediction is not none %}
+    <section class="panel result-panel" aria-live="polite">
+        <div class="panel-heading">
+            <div class="panel-icon" aria-hidden="true">↔</div>
+            <div>
+                <h2>Comparison results</h2>
+                <p>Inspect how the selected corruption affected this review.</p>
             </div>
         </div>
 
+        <div class="comparison-grid">
+            <article class="review-card">
+                <h3>Original review</h3>
+                <div class="review-text">{{ original }}</div>
+
+                <div class="prediction-label">Predicted sentiment</div>
+                <div class="prediction {{ 'positive' if original_prediction == 'Positive' else 'negative' }}">
+                    {{ original_prediction }}
+                </div>
+
+                {% if original_score is not none %}
+                <p class="score">Predicted-class score: <strong>{{ original_score }}%</strong></p>
+                {% endif %}
+            </article>
+
+            <article class="review-card">
+                <h3>Corrupted review</h3>
+                <div class="review-text">{{ corrupted }}</div>
+
+                <div class="prediction-label">Predicted sentiment</div>
+                <div class="prediction {{ 'positive' if corrupted_prediction == 'Positive' else 'negative' }}">
+                    {{ corrupted_prediction }}
+                </div>
+
+                {% if corrupted_score is not none %}
+                <p class="score">Predicted-class score: <strong>{{ corrupted_score }}%</strong></p>
+                {% endif %}
+            </article>
+        </div>
+
         {% if original_prediction != corrupted_prediction %}
-        <p class="error">
-            The predicted sentiment changed after corruption.
-        </p>
+        <div class="outcome changed">
+            <strong>Prediction changed.</strong>
+            The selected corruption changed the predicted sentiment for this review.
+        </div>
         {% else %}
-        <p class="positive">
+        <div class="outcome stable">
+            <strong>Prediction remained stable.</strong>
             The predicted sentiment stayed the same for this review.
-        </p>
+        </div>
         {% endif %}
 
-        <p class="muted">
-            Scores represent the model's score for its predicted class,
-            not a guarantee that the prediction is correct.
+        <p class="hint">
+            Scores represent the model's score for its predicted class, not a guarantee
+            that the prediction is correct. A stable prediction on one review does not
+            establish overall model robustness.
         </p>
     </section>
     {% endif %}
-
-    <p class="muted">
-        Research: Robustness of Sentiment Classification Models Under
-        Character-Level Text Corruption.
-    </p>
 </main>
+
+<footer>
+    <div class="container footer-inner">
+        <span>Sentinel NLP · Sentiment Robustness Research</span>
+        <span>Interactive experiment · IMDb movie reviews</span>
+    </div>
+</footer>
 
 <script>
     const rateSlider = document.getElementById("rate");

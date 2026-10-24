@@ -1,145 +1,667 @@
+
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sentiment Analyzer</title>
+    <meta name="theme-color" content="#07111f">
+    <meta name="description" content="Explore sentiment classification and character-level text robustness using an IMDb movie review model.">
+    <title>Sentinel NLP | Sentiment Lab</title>
+
     <style>
+        :root {
+            --bg: #07111f;
+            --surface: #0d1b2c;
+            --surface-light: #12243a;
+            --border: #233950;
+            --cyan: #38d9ed;
+            --cyan-hover: #76eafa;
+            --text: #edf5ff;
+            --muted: #91a5bd;
+            --green: #54e0ad;
+            --red: #ff8295;
+        }
+
         * {
             box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
         }
 
         body {
             margin: 0;
             min-height: 100vh;
-            padding: 40px 18px;
-            background: #0b1020;
-            color: #eef2ff;
-            font-family: Arial, sans-serif;
-        }
-
-        main {
-            max-width: 760px;
-            margin: 40px auto;
-            padding: 32px;
-            background: #151d33;
-            border: 1px solid #2c3857;
-            border-radius: 20px;
-        }
-
-        .tag {
-            color: #a5b4fc;
-            font-size: 13px;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-        }
-
-        h1 {
-            font-size: 34px;
-            margin-bottom: 12px;
-        }
-
-        p {
-            color: #b8c3dc;
+            background:
+                radial-gradient(ellipse at 15% 0%, #12314a 0%, transparent 42%),
+                var(--bg);
+            color: var(--text);
+            font-family: Inter, "Segoe UI", Arial, sans-serif;
             line-height: 1.6;
         }
 
-        textarea {
-            width: 100%;
-            min-height: 180px;
-            margin: 16px 0;
-            padding: 16px;
-            border-radius: 12px;
-            border: 1px solid #394765;
-            background: #0b1020;
-            color: white;
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        button, textarea {
             font: inherit;
-            resize: vertical;
         }
 
-        button {
+        .container {
+            width: min(1120px, calc(100% - 40px));
+            margin: 0 auto;
+        }
+
+        header {
+            border-bottom: 1px solid rgba(145, 165, 189, 0.15);
+            background: rgba(7, 17, 31, 0.82);
+        }
+
+        .navbar {
+            min-height: 78px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 24px;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 800;
+            letter-spacing: 1px;
+        }
+
+        .brand-icon {
+            display: grid;
+            place-items: center;
+            width: 42px;
+            height: 42px;
+            border-radius: 12px;
+            color: var(--bg);
+            background: var(--cyan);
+            font-size: 23px;
+        }
+
+        .brand small {
+            display: block;
+            color: var(--muted);
+            font-size: 10px;
+            letter-spacing: 2px;
+            font-weight: 600;
+        }
+
+        nav {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        nav a {
+            padding: 9px 13px;
+            border-radius: 9px;
+            color: var(--muted);
+            font-size: 13px;
+            transition: background 0.2s, color 0.2s;
+        }
+
+        nav a:hover,
+        nav a.active {
+            background: var(--surface-light);
+            color: var(--cyan);
+        }
+
+        .hero {
+            padding: 72px 0 38px;
+            max-width: 850px;
+        }
+
+        .eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 9px;
+            color: var(--cyan);
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--green);
+            box-shadow: 0 0 12px rgba(84, 224, 173, 0.5);
+        }
+
+        h1 {
+            margin: 18px 0;
+            font-size: clamp(36px, 6vw, 60px);
+            line-height: 1.08;
+            letter-spacing: -2px;
+        }
+
+        h1 span {
+            color: var(--cyan);
+        }
+
+        .hero p {
+            max-width: 650px;
+            color: var(--muted);
+            font-size: 17px;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 16px;
+            margin: 32px 0;
+        }
+
+        .stat-card {
+            padding: 21px;
+            border: 1px solid var(--border);
+            border-radius: 15px;
+            background: rgba(13, 27, 44, 0.85);
+        }
+
+        .stat-label {
+            color: var(--muted);
+            font-size: 11px;
+            letter-spacing: 1.2px;
+            text-transform: uppercase;
+        }
+
+        .stat-value {
+            margin: 9px 0 2px;
+            font-size: 29px;
+            font-weight: 800;
+            letter-spacing: -1px;
+        }
+
+        .stat-note {
+            color: var(--muted);
+            font-size: 12px;
+        }
+
+        .workspace {
+            display: grid;
+            grid-template-columns: minmax(0, 1.35fr) minmax(250px, 0.65fr);
+            gap: 22px;
+            align-items: start;
+            margin: 28px 0 64px;
+        }
+
+        .panel {
+            min-width: 0;
+            padding: 28px;
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            background: linear-gradient(145deg, #102137, #0b1929);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.13);
+        }
+
+        .panel-heading {
+            display: flex;
+            align-items: flex-start;
+            gap: 13px;
+            margin-bottom: 24px;
+        }
+
+        .panel-icon {
+            display: grid;
+            place-items: center;
+            flex: 0 0 43px;
+            height: 43px;
+            border-radius: 12px;
+            background: rgba(56, 217, 237, 0.1);
+            color: var(--cyan);
+            font-size: 21px;
+        }
+
+        h2 {
+            margin: 0;
+            font-size: 21px;
+        }
+
+        .panel-heading p {
+            margin: 4px 0 0;
+            color: var(--muted);
+            font-size: 13px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 9px;
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        .field-hint {
+            float: right;
+            color: var(--muted);
+            font-size: 11px;
+            font-weight: 400;
+        }
+
+        textarea {
+            display: block;
             width: 100%;
-            padding: 15px;
-            border: 0;
-            border-radius: 10px;
-            background: #818cf8;
-            color: #10152b;
-            font-weight: bold;
-            font-size: 16px;
-            cursor: pointer;
+            min-height: 215px;
+            padding: 17px;
+            resize: vertical;
+            border: 1px solid #2c435b;
+            border-radius: 12px;
+            outline: none;
+            background: #081523;
+            color: var(--text);
+            line-height: 1.7;
+            transition: border-color 0.2s, box-shadow 0.2s;
         }
 
-        button:hover {
-            background: #a5b4fc;
+        textarea::placeholder {
+            color: #667d95;
+        }
+
+        textarea:focus {
+            border-color: var(--cyan);
+            box-shadow: 0 0 0 3px rgba(56, 217, 237, 0.1);
+        }
+
+        .button {
+            display: inline-flex;
+            width: 100%;
+            min-height: 49px;
+            align-items: center;
+            justify-content: center;
+            gap: 9px;
+            margin-top: 15px;
+            padding: 13px 18px;
+            border: 0;
+            border-radius: 11px;
+            background: var(--cyan);
+            color: #061321;
+            font-weight: 800;
+            cursor: pointer;
+            transition: transform 0.2s, background 0.2s;
+        }
+
+        .button:hover {
+            transform: translateY(-1px);
+            background: var(--cyan-hover);
+        }
+
+        .button:focus-visible,
+        nav a:focus-visible {
+            outline: 2px solid white;
+            outline-offset: 3px;
         }
 
         .result {
-            margin-top: 24px;
+            margin-top: 22px;
             padding: 20px;
-            border-radius: 12px;
-            background: #202b45;
+            border: 1px solid var(--border);
+            border-radius: 13px;
+            background: #081523;
+        }
+
+        .result.positive-result {
+            border-color: rgba(84, 224, 173, 0.45);
+        }
+
+        .result.negative-result {
+            border-color: rgba(255, 130, 149, 0.45);
+        }
+
+        .result-label {
+            color: var(--muted);
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+        }
+
+        .prediction {
+            margin: 7px 0;
+            font-size: 28px;
+            font-weight: 800;
         }
 
         .positive {
-            color: #6ee7b7;
+            color: var(--green);
         }
 
         .negative {
-            color: #fda4af;
+            color: var(--red);
         }
 
-        .note {
+        .result p,
+        .side-panel p {
+            color: var(--muted);
             font-size: 13px;
-            margin-top: 24px;
+        }
+
+        .score-track {
+            height: 7px;
+            margin: 12px 0;
+            overflow: hidden;
+            border-radius: 20px;
+            background: #24374b;
+        }
+
+        .score-fill {
+            height: 100%;
+            border-radius: inherit;
+            background: var(--cyan);
+        }
+
+        .side-panel {
+            display: grid;
+            gap: 16px;
+        }
+
+        .info-card {
+            padding: 22px;
+            border: 1px solid var(--border);
+            border-radius: 15px;
+            background: rgba(13, 27, 44, 0.8);
+        }
+
+        .info-card h3 {
+            margin: 0 0 8px;
+            font-size: 15px;
+        }
+
+        .info-card p {
+            margin: 0;
+        }
+
+        .model-list {
+            display: grid;
+            gap: 12px;
+            margin-top: 17px;
+        }
+
+        .model-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 13px;
+        }
+
+        .model-marker {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: var(--cyan);
+        }
+
+        .notice {
+            margin-top: 15px;
+            padding: 12px;
+            border-radius: 9px;
+            background: rgba(56, 217, 237, 0.06);
+            color: var(--muted);
+            font-size: 12px;
+        }
+
+        footer {
+            padding: 24px 0;
+            border-top: 1px solid rgba(145, 165, 189, 0.15);
+            color: var(--muted);
+            font-size: 12px;
+        }
+
+        .footer-inner {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        @media (max-width: 760px) {
+            .navbar {
+                align-items: flex-start;
+                flex-direction: column;
+                padding: 18px 0;
+            }
+
+            nav {
+                width: 100%;
+            }
+
+            nav a {
+                padding: 8px 10px;
+            }
+
+            .hero {
+                padding-top: 45px;
+            }
+
+            .workspace {
+                grid-template-columns: 1fr;
+            }
+
+            .stats {
+                gap: 9px;
+            }
+
+            .stat-card {
+                padding: 14px;
+            }
+
+            .stat-value {
+                font-size: 23px;
+            }
+
+            .stat-label {
+                font-size: 9px;
+                letter-spacing: 0.5px;
+            }
+
+            .panel {
+                padding: 20px;
+            }
+        }
+
+        @media (max-width: 420px) {
+            .container {
+                width: calc(100% - 26px);
+            }
+
+            .stats {
+                grid-template-columns: 1fr;
+            }
+
+            h1 {
+                letter-spacing: -1px;
+            }
+
+            .field-hint {
+                float: none;
+                display: block;
+                margin-top: 3px;
+            }
         }
     </style>
 </head>
 
 <body>
-    <main>
-        <div class="tag">IMDb · Machine Learning Demo</div>
-        <h1>Movie Review Analyzer</h1>
+    <header>
+        <div class="container navbar">
+            <a class="brand" href="/" aria-label="Sentinel NLP home">
+                <span class="brand-icon" aria-hidden="true">N</span>
+                <span>
+                    SENTINEL NLP
+                    <small>TEXT ROBUSTNESS LAB</small>
+                </span>
+            </a>
 
-        <nav style="display:flex; gap:12px; flex-wrap:wrap; margin:20px 0;">
-            <a href="/" style="color:#93c5fd;">Sentiment Analyzer</a>
-            <a href="/playground" style="color:#93c5fd;">Robustness Playground</a>
-            <a href="/results" style="color:#93c5fd;">Results Dashboard</a>
-        </nav>
+            <nav aria-label="Main navigation">
+                <a class="active" href="/">Sentiment Analyzer</a>
+                <a href="/playground">Robustness Playground</a>
+                <a href="/results">Results Dashboard</a>
+            </nav>
+        </div>
+    </header>
 
-        <p>
-            Enter a movie review to see whether your trained
-            TF-IDF and Logistic Regression model predicts
-            a positive or negative sentiment.
-        </p>
+    <main class="container">
+        <section class="hero">
+            <div class="eyebrow">
+                <span class="status-dot"></span>
+                IMDb · Machine Learning Research
+            </div>
 
-        <form method="POST">
-            <label for="review">Your movie review</label>
-            <textarea id="review" name="review" placeholder="Type or paste a movie review here..."
-                required>{{ review }}</textarea>
+            <h1>Understand sentiment.<br><span>Test robustness.</span></h1>
 
-            <button type="submit">Analyze sentiment →</button>
-        </form>
-
-        {% if prediction is not none %}
-        <section class="result" aria-live="polite">
-            <h2 class="{{ 'positive' if prediction|string|lower == 'positive' else 'negative' }}">
-                Prediction: {{ prediction }}
-            </h2>
-
-            {% if probability is not none %}
-            <p>Model score for this predicted class: {{ "%.2f"|format(probability) }}%</p>
-            {% endif %}
-
-            <p>This is a model prediction, not a guaranteed judgment of the review.</p>
+            <p>
+                Explore how a machine learning model interprets movie reviews
+                and investigate what happens when text is altered by character-level noise.
+            </p>
         </section>
-        {% endif %}
 
-        <p class="note">
-            Research project: Robustness of Sentiment Classification
-            Models Under Character-Level Text Corruption.
-        </p>
+        <section class="stats" aria-label="Project overview">
+            <article class="stat-card">
+                <div class="stat-label">Clean test accuracy</div>
+                <div class="stat-value">89.92%</div>
+                <div class="stat-note">TF-IDF + Logistic Regression</div>
+            </article>
+
+            <article class="stat-card">
+                <div class="stat-label">Models evaluated</div>
+                <div class="stat-value">03</div>
+                <div class="stat-note">Logistic Regression, SVM, DistilBERT</div>
+            </article>
+
+            <article class="stat-card">
+                <div class="stat-label">Corruption methods</div>
+                <div class="stat-value">04</div>
+                <div class="stat-note">Deletion, insertion, substitution, transposition</div>
+            </article>
+        </section>
+
+        <section class="workspace">
+            <div class="panel">
+                <div class="panel-heading">
+                    <div class="panel-icon" aria-hidden="true">✳</div>
+                    <div>
+                        <h2>Sentiment analyzer</h2>
+                        <p>Enter a movie review to analyze its predicted sentiment.</p>
+                    </div>
+                </div>
+
+                <form method="POST">
+                    <label for="review">
+                        Your movie review
+                        <span class="field-hint">Longer reviews may provide more context</span>
+                    </label>
+
+                    <textarea
+                        id="review"
+                        name="review"
+                        placeholder="Example: The performances were excellent, the story was engaging, and I thoroughly enjoyed this movie..."
+                        required
+                    >{{ review }}</textarea>
+
+                    <button class="button" type="submit">
+                        Analyze sentiment <span aria-hidden="true">→</span>
+                    </button>
+                </form>
+
+                {% if prediction is not none %}
+                <section
+                    class="result {{ 'positive-result' if prediction|string|lower == 'positive' else 'negative-result' }}"
+                    aria-live="polite"
+                >
+                    <div class="result-label">Model prediction</div>
+
+                    <div class="prediction {{ 'positive' if prediction|string|lower == 'positive' else 'negative' }}">
+                        {{ prediction }}
+                    </div>
+
+                    {% if probability is not none %}
+                    <p>
+                        Model score for the predicted class:
+                        <strong>{{ "%.2f"|format(probability) }}%</strong>
+                    </p>
+
+                    <div
+                        class="score-track"
+                        role="progressbar"
+                        aria-label="Model score for predicted class"
+                        aria-valuemin="0"
+                        aria-valuemax="100"
+                        aria-valuenow="{{ probability }}"
+                    >
+                        <div class="score-fill" style="width: {{ probability }}%"></div>
+                    </div>
+                    {% endif %}
+
+                    <p>
+                        This score reflects the model's output, not a guarantee
+                        that the prediction is correct.
+                    </p>
+                </section>
+                {% endif %}
+            </div>
+
+            <aside class="side-panel">
+                <section class="info-card">
+                    <h3>Inside the experiment</h3>
+                    <p>
+                        This project studies whether sentiment models remain
+                        reliable when movie reviews contain character-level errors.
+                    </p>
+
+                    <div class="model-list">
+                        <div class="model-item">
+                            <span class="model-marker"></span>
+                            TF-IDF + Logistic Regression
+                        </div>
+                        <div class="model-item">
+                            <span class="model-marker"></span>
+                            TF-IDF + Linear SVM
+                        </div>
+                        <div class="model-item">
+                            <span class="model-marker"></span>
+                            Fine-tuned DistilBERT
+                        </div>
+                    </div>
+                </section>
+
+                <section class="info-card">
+                    <h3>Explore the research</h3>
+                    <p>
+                        Test text corruption interactively or inspect the
+                        evaluation results from the navigation above.
+                    </p>
+                    <div class="notice">
+                        Research prototype · IMDb movie review dataset
+                    </div>
+                </section>
+
+                <section class="info-card">
+                    <h3>Research question</h3>
+                    <p>
+                        How does sentiment classification performance change
+                        as the amount and type of text corruption increase?
+                    </p>
+                </section>
+            </aside>
+        </section>
     </main>
-</body>
 
+    <footer>
+        <div class="container footer-inner">
+            <span>Sentinel NLP · Sentiment Robustness Research</span>
+            <span>Predictions are experimental, not guaranteed judgments.</span>
+        </div>
+    </footer>
+</body>
 </html>

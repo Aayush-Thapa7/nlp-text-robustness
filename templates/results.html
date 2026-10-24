@@ -1,287 +1,528 @@
+
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Robustness Results Dashboard</title>
+    <meta name="theme-color" content="#07111f">
+    <meta name="description" content="Explore IMDb sentiment classification robustness results across character-level text corruption methods.">
+    <title>Results Dashboard | Sentinel NLP</title>
+
     <style>
+        :root {
+            --bg: #07111f;
+            --surface: #0d1b2c;
+            --surface-light: #12243a;
+            --border: #233950;
+            --cyan: #38d9ed;
+            --cyan-light: #76eafa;
+            --text: #edf5ff;
+            --muted: #91a5bd;
+            --green: #54e0ad;
+        }
+
         * {
             box-sizing: border-box;
         }
 
         body {
             margin: 0;
-            padding: 30px 20px;
-            font-family: Arial, sans-serif;
-            background: #0b1120;
-            color: #e5e7eb;
-        }
-
-        .container {
-            max-width: 1150px;
-            margin: auto;
-        }
-
-        header {
-            margin-bottom: 28px;
-        }
-
-        h1 {
-            color: #93c5fd;
-            margin-bottom: 8px;
-        }
-
-        .subtitle {
-            color: #9ca3af;
+            min-height: 100vh;
+            background:
+                radial-gradient(ellipse at 15% 0%, #12314a 0%, transparent 42%),
+                var(--bg);
+            color: var(--text);
+            font-family: Inter, "Segoe UI", Arial, sans-serif;
             line-height: 1.6;
         }
 
-        .actions {
-            margin: 20px 0;
-        }
-
         a {
-            color: #93c5fd;
+            color: inherit;
             text-decoration: none;
         }
 
-        .button {
-            display: inline-block;
-            padding: 11px 16px;
-            background: #2563eb;
-            color: white;
-            border-radius: 8px;
+        .container {
+            width: min(1160px, calc(100% - 40px));
+            margin: 0 auto;
+        }
+
+        header {
+            border-bottom: 1px solid rgba(145, 165, 189, 0.15);
+            background: rgba(7, 17, 31, 0.85);
+        }
+
+        .navbar {
+            min-height: 78px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 18px;
+            padding: 12px 0;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 800;
+            letter-spacing: 1px;
+        }
+
+        .brand-icon {
+            display: grid;
+            place-items: center;
+            width: 42px;
+            height: 42px;
+            border-radius: 12px;
+            background: var(--cyan);
+            color: var(--bg);
+            font-size: 23px;
+        }
+
+        .brand small {
+            display: block;
+            color: var(--muted);
+            font-size: 10px;
+            letter-spacing: 2px;
+        }
+
+        nav {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        nav a {
+            padding: 9px 13px;
+            border-radius: 9px;
+            color: var(--muted);
+            font-size: 13px;
+        }
+
+        nav a:hover,
+        nav a.active {
+            background: var(--surface-light);
+            color: var(--cyan);
+        }
+
+        .hero {
+            padding: 62px 0 26px;
+            max-width: 850px;
+        }
+
+        .eyebrow {
+            color: var(--cyan);
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        h1 {
+            margin: 15px 0 12px;
+            font-size: clamp(35px, 5vw, 53px);
+            line-height: 1.12;
+            letter-spacing: -1.7px;
+        }
+
+        h1 span {
+            color: var(--cyan);
+        }
+
+        .subtitle {
+            max-width: 760px;
+            color: var(--muted);
         }
 
         .cards {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
-            gap: 16px;
-            margin: 24px 0;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 15px;
+            margin: 28px 0;
         }
 
-        .card,
-        .panel {
-            background: #151e30;
-            border: 1px solid #293449;
-            border-radius: 12px;
-            padding: 20px;
+        .card {
+            min-width: 0;
+            padding: 21px;
+            border: 1px solid var(--border);
+            border-radius: 15px;
+            background: rgba(13, 27, 44, 0.85);
         }
 
         .card h3 {
-            margin: 0 0 12px;
-            font-size: 14px;
-            color: #9ca3af;
-            font-weight: normal;
+            margin: 0;
+            color: var(--muted);
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 1px;
+            text-transform: uppercase;
         }
 
         .metric {
-            font-size: 27px;
-            font-weight: bold;
-            color: #86efac;
+            margin: 11px 0 3px;
+            color: var(--cyan);
+            font-size: clamp(23px, 3vw, 31px);
+            font-weight: 800;
+            letter-spacing: -0.8px;
+        }
+
+        .card-note {
+            color: var(--muted);
+            font-size: 12px;
         }
 
         .panel {
+            min-width: 0;
             margin: 20px 0;
-            overflow-x: auto;
+            padding: 25px;
+            overflow: hidden;
+            border: 1px solid var(--border);
+            border-radius: 17px;
+            background: linear-gradient(145deg, #102137, #0b1929);
+            box-shadow: 0 18px 48px rgba(0, 0, 0, 0.12);
+        }
+
+        .panel-heading {
+            margin-bottom: 8px;
         }
 
         h2 {
+            margin: 0;
             font-size: 20px;
-            margin-top: 0;
+        }
+
+        .panel-description {
+            margin: 5px 0 22px;
+            color: var(--muted);
+            font-size: 13px;
         }
 
         .chart-row {
-            display: flex;
+            display: grid;
+            grid-template-columns: 145px minmax(60px, 1fr) 68px;
             align-items: center;
-            gap: 12px;
-            margin: 18px 0;
+            gap: 13px;
+            margin: 17px 0;
         }
 
         .chart-label {
-            width: 125px;
-            flex-shrink: 0;
-            text-transform: capitalize;
+            color: #dce8f6;
+            font-size: 13px;
+            overflow-wrap: anywhere;
         }
 
         .bar-track {
-            flex: 1;
-            background: #273449;
-            height: 25px;
-            border-radius: 5px;
+            height: 12px;
             overflow: hidden;
+            border: 1px solid rgba(145, 165, 189, 0.1);
+            border-radius: 20px;
+            background: #203249;
         }
 
         .bar {
             height: 100%;
-            background: linear-gradient(90deg, #2563eb, #38bdf8);
-            border-radius: 5px;
+            border-radius: inherit;
+            background: linear-gradient(90deg, #159dbb, var(--cyan-light));
+            transition: width 0.4s ease;
         }
 
         .chart-value {
-            width: 65px;
             text-align: right;
-            font-size: 14px;
+            color: var(--cyan);
+            font-size: 13px;
+            font-weight: 700;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .strategy-block {
+            margin-top: 25px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border);
+        }
+
+        .strategy-block h3 {
+            margin: 0 0 15px;
+            font-size: 15px;
+        }
+
+        .strategy-block:first-of-type {
+            border-top: 0;
+        }
+
+        .table-wrap {
+            width: 100%;
+            overflow-x: auto;
+            border: 1px solid var(--border);
+            border-radius: 11px;
         }
 
         table {
             width: 100%;
             border-collapse: collapse;
-            min-width: 600px;
+            min-width: 650px;
+            font-size: 13px;
         }
 
         th,
         td {
-            padding: 13px;
-            border-bottom: 1px solid #293449;
+            padding: 14px 16px;
+            border-bottom: 1px solid var(--border);
             text-align: left;
+            white-space: nowrap;
         }
 
         th {
-            color: #93c5fd;
-            background: #1e293b;
+            background: #14273c;
+            color: var(--cyan);
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
         }
 
-        tr:hover {
-            background: #1e293b;
+        td {
+            color: #dce8f6;
+            font-variant-numeric: tabular-nums;
         }
 
-        footer {
-            color: #9ca3af;
-            margin-top: 30px;
+        tbody tr:last-child td {
+            border-bottom: 0;
+        }
+
+        tbody tr:hover {
+            background: rgba(56, 217, 237, 0.045);
+        }
+
+        .empty {
+            padding: 20px;
+            border: 1px dashed var(--border);
+            border-radius: 10px;
+            color: var(--muted);
             font-size: 13px;
         }
 
-        @media (max-width: 550px) {
-            body {
-                padding: 18px 10px;
+        .research-note {
+            margin-top: 18px;
+            padding: 15px;
+            border: 1px solid rgba(56, 217, 237, 0.2);
+            border-radius: 11px;
+            background: rgba(56, 217, 237, 0.05);
+            color: var(--muted);
+            font-size: 12px;
+        }
+
+        footer {
+            margin-top: 35px;
+            padding: 24px 0;
+            border-top: 1px solid rgba(145, 165, 189, 0.15);
+            color: var(--muted);
+            font-size: 12px;
+        }
+
+        .footer-inner {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            gap: 10px;
+        }
+
+        @media (max-width: 900px) {
+            .cards {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                width: calc(100% - 26px);
             }
 
-            .chart-label {
-                width: 90px;
-                font-size: 13px;
+            .navbar {
+                align-items: flex-start;
+                flex-direction: column;
             }
 
+            nav {
+                gap: 4px;
+            }
+
+            nav a {
+                padding: 8px;
+                font-size: 12px;
+            }
+
+            .hero {
+                padding-top: 42px;
+            }
+
+            .cards {
+                gap: 10px;
+            }
+
+            .card {
+                padding: 15px;
+            }
+
+            .panel {
+                padding: 17px;
+            }
+
+            .chart-row {
+                grid-template-columns: 95px minmax(35px, 1fr) 57px;
+                gap: 8px;
+            }
+
+            .chart-label,
             .chart-value {
-                width: 55px;
+                font-size: 11px;
+            }
+        }
+
+        @media (max-width: 380px) {
+            .cards {
+                grid-template-columns: 1fr;
             }
         }
     </style>
 </head>
 
 <body>
-    <div class="container">
-        <header>
-            <h1>Model Robustness Dashboard</h1>
-            <p class="subtitle">
-                Robustness of Sentiment Classification Models Under
-                Character-Level Text Corruption
-            </p>
-        </header>
+<header>
+    <div class="container navbar">
+        <a class="brand" href="/" aria-label="Sentinel NLP home">
+            <span class="brand-icon" aria-hidden="true">N</span>
+            <span>
+                SENTINEL NLP
+                <small>TEXT ROBUSTNESS LAB</small>
+            </span>
+        </a>
 
-        <div class="actions">
-            <a class="button" href="/">← Back to Sentiment Analyzer</a>
+        <nav aria-label="Main navigation">
+            <a href="/">Sentiment Analyzer</a>
+            <a href="/playground">Robustness Playground</a>
+            <a class="active" href="/results">Results Dashboard</a>
+        </nav>
+    </div>
+</header>
+
+<main class="container">
+    <section class="hero">
+        <div class="eyebrow">Experimental evaluation · 03</div>
+        <h1>Measure model performance.<br><span>Understand robustness.</span></h1>
+        <p class="subtitle">
+            Explore how character-level text corruption affects the accuracy
+            and macro-F1 of your TF-IDF + Logistic Regression sentiment classifier.
+            Metrics below are loaded from your experiment results.
+        </p>
+    </section>
+
+    <section class="cards" aria-label="Experiment summary">
+        <article class="card">
+            <h3>Clean test accuracy</h3>
+            <div class="metric">
+                {% for record in records %}
+                    {% if record['rate_pct'] == 0 and record['strategy'] == 'deletion' %}
+                        {{ "%.2f"|format(record['accuracy'] * 100) }}%
+                    {% endif %}
+                {% endfor %}
+            </div>
+            <div class="card-note">Uncorrupted test reviews</div>
+        </article>
+
+        <article class="card">
+            <h3>Clean macro-F1</h3>
+            <div class="metric">
+                {% for record in records %}
+                    {% if record['rate_pct'] == 0 and record['strategy'] == 'deletion' %}
+                        {{ "%.2f"|format(record['macro_f1'] * 100) }}%
+                    {% endif %}
+                {% endfor %}
+            </div>
+            <div class="card-note">Uncorrupted test reviews</div>
+        </article>
+
+        <article class="card">
+            <h3>Corruption methods</h3>
+            <div class="metric">04</div>
+            <div class="card-note">Four character-level strategies</div>
+        </article>
+
+        <article class="card">
+            <h3>Noise range</h3>
+            <div class="metric">0–20%</div>
+            <div class="card-note">Five percentage-point steps</div>
+        </article>
+    </section>
+
+    <section class="panel">
+        <div class="panel-heading">
+            <h2>Accuracy at 20% corruption</h2>
         </div>
+        <p class="panel-description">
+            Accuracy for each corruption strategy at the highest tested noise level.
+        </p>
 
-        <section class="cards">
+        {% set high_noise = records | selectattr('rate_pct', 'equalto', 20) | list %}
 
-            <div class="card">
-                <h3>Clean Test Accuracy</h3>
-                <div class="metric">
-                    {% for record in records %}
-                    {% if record['rate_pct'] == 0 and record['strategy'] == 'deletion' %}
-                    {{ "%.2f"|format(record['accuracy'] * 100) }}%
-                    {% endif %}
-                    {% endfor %}
-                </div>
-            </div>
-
-            <div class="card">
-                <h3>Clean Macro-F1</h3>
-                <div class="metric">
-                    {% for record in records %}
-                    {% if record['rate_pct'] == 0 and record['strategy'] == 'deletion' %}
-                    {{ "%.2f"|format(record['macro_f1'] * 100) }}%
-                    {% endif %}
-                    {% endfor %}
-                </div>
-            </div>
-
-            <div class="card">
-                <h3>Corruption Methods</h3>
-                <div class="metric">4</div>
-            </div>
-            <div class="card">
-                <h3>Corruption Levels</h3>
-                <div class="metric">0%–20%</div>
-            </div>
-        </section>
-
-        <section class="panel">
-            <h2>Accuracy at 20% Corruption</h2>
-
-            <p class="subtitle">
-                These bars are generated from your experiment CSV file.
-            </p>
-
-            {% for record in records if record['rate_pct'] == 20 %}
+        {% if high_noise %}
+            {% for record in high_noise %}
             <div class="chart-row">
-
-                <div class="chart-label">
-                    {{ record['strategy'] | title }}
-                </div>
-
+                <div class="chart-label">{{ record['strategy'] | title }}</div>
                 <div class="bar-track">
-                    <div class="bar" style="width: {{ record['accuracy'] * 100 }}%">
-                    </div>
+                    <div class="bar" style="width: {{ [100, [0, record['accuracy'] * 100] | max] | min }}%"></div>
                 </div>
-
-                <div class="chart-value">
-                    {{ "%.2f"|format(record['accuracy'] * 100) }}%
-                </div>
-
+                <div class="chart-value">{{ "%.2f"|format(record['accuracy'] * 100) }}%</div>
             </div>
             {% endfor %}
-        </section>
+        {% else %}
+            <div class="empty">No results for 20% corruption were found in the current CSV file.</div>
+        {% endif %}
+    </section>
 
+    <section class="panel">
+        <div class="panel-heading">
+            <h2>Accuracy across corruption levels</h2>
+        </div>
+        <p class="panel-description">
+            Compare the accuracy decline as the amount of text corruption increases.
+        </p>
 
-<section class="panel">
-    <h2>Accuracy Across Corruption Levels</h2>
-    <p class="subtitle">
-        Accuracy at each corruption level, based on your experiment CSV.
-    </p>
+        {% for strategy in ['deletion', 'insertion', 'substitution', 'transposition'] %}
+            <div class="strategy-block">
+                <h3>{{ strategy | title }}</h3>
 
-    {% for strategy in ['deletion', 'insertion', 'substitution', 'transposition'] %}
-        <h3>{{ strategy | title }}</h3>
+                {% set strategy_records = records | selectattr('strategy', 'equalto', strategy) | list %}
 
-        {% for record in records if record['strategy'] == strategy %}
-            <div class="chart-row">
-                <div class="chart-label">
-                    {{ record['rate_pct'] }}% corruption
-                </div>
-
-                <div class="bar-track">
-                    <div class="bar"
-                         style="width: {{ record['accuracy'] * 100 }}%">
+                {% if strategy_records %}
+                    {% for record in strategy_records %}
+                    <div class="chart-row">
+                        <div class="chart-label">{{ record['rate_pct'] }}% corruption</div>
+                        <div class="bar-track">
+                            <div class="bar" style="width: {{ [100, [0, record['accuracy'] * 100] | max] | min }}%"></div>
+                        </div>
+                        <div class="chart-value">{{ "%.2f"|format(record['accuracy'] * 100) }}%</div>
                     </div>
-                </div>
-
-                <div class="chart-value">
-                    {{ "%.2f"|format(record['accuracy'] * 100) }}%
-                </div>
+                    {% endfor %}
+                {% else %}
+                    <p class="panel-description">No records available for this strategy.</p>
+                {% endif %}
             </div>
         {% endfor %}
-    {% endfor %}
-</section>
+    </section>
 
-        <section class="panel">
-            <h2>Experiment Results</h2>
-            <p class="subtitle">
-                The table below is loaded from your robustness_results.csv file.
-            </p>
+    <section class="panel">
+        <div class="panel-heading">
+            <h2>Experiment results</h2>
+        </div>
+        <p class="panel-description">
+            Raw records loaded from <code>results/robustness_results.csv</code>.
+            Scroll horizontally to inspect all columns on smaller screens.
+        </p>
 
-            {% if records %}
+        {% if records %}
+        <div class="table-wrap">
             <table>
                 <thead>
                     <tr>
@@ -295,26 +536,37 @@
                     <tr>
                         {% for value in record.values() %}
                         <td>
-                            {% if value is number and value <= 1 and value>= 0 %}
+                            {% if value is number and value <= 1 and value >= 0 %}
                                 {{ "%.4f"|format(value) }}
-                                {% else %}
+                            {% else %}
                                 {{ value }}
-                                {% endif %}
+                            {% endif %}
                         </td>
                         {% endfor %}
                     </tr>
                     {% endfor %}
                 </tbody>
             </table>
-            {% else %}
-            <p>No experiment records were found in the CSV file.</p>
-            {% endif %}
-        </section>
+        </div>
+        {% else %}
+        <div class="empty">No experiment records were found in the CSV file.</div>
+        {% endif %}
 
-        <footer>
-            Sentiment Classification Research Project · TF-IDF + Logistic Regression
-        </footer>
+        <div class="research-note">
+            <strong>How to interpret these results:</strong>
+            a lower accuracy under corruption indicates that more predictions
+            are incorrect on that corrupted test set. The dashboard displays
+            aggregate evaluation metrics; it does not guarantee the correctness
+            of an individual review prediction.
+        </div>
+    </section>
+</main>
+
+<footer>
+    <div class="container footer-inner">
+        <span>Sentinel NLP · Sentiment Robustness Research</span>
+        <span>IMDb · TF-IDF + Logistic Regression</span>
     </div>
+</footer>
 </body>
-
 </html>
